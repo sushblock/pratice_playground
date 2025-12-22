@@ -1,0 +1,13 @@
+.env
+*.env
+uv.lock
+.venv
+__pycache__/
+*.pyc
+instance/
+.webassets-cache
+migrations/
+*.sqlite3
+*.log
+.DS_Store
+.idea/
