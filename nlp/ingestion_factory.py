@@ -79,39 +79,3 @@ class IngestionFactory:
         adapter = self.get_adapter(file_path)
         raw_data = adapter.load(file_path)
         return adapter.process(raw_data)
-
-
-if __name__ == "__main__":
-    # Define the folder containing your mixed documents
-    DOCUMENT_FOLDER = "your_document_folder_path"
-    
-    # Initialize the factory with your desired RAG configuration
-    # config = RAGConfig(chunk_size=1024, chunk_overlap=128)
-    factory = IngestionFactory()
-
-    print(f"--- Starting Automatic Ingestion Pipeline for folder: {DOCUMENT_FOLDER} ---")
-
-    # Get a list of all items in the directory and filter for files only
-    all_items = os.listdir(DOCUMENT_FOLDER)
-    files_to_process = [os.path.join(DOCUMENT_FOLDER, name) for name in all_items if os.path.isfile(os.path.join(DOCUMENT_FOLDER, name))]
-    
-    all_rag_documents = []
-
-    for file_path in files_to_process:
-        try:
-            print(f"\nProcessing file: {file_path}")
-            # The factory handles the detection and calls the right adapter automatically
-            chunks = factory.process_file(file_path)
-            all_rag_documents.extend(chunks)
-            print(f"Successfully created {len(chunks)} chunks.")
-            
-        except ValueError as e:
-            # This handles the specific exception raised when a MIME type is not in the registry
-            print(f"Skipping {file_path}: {e}")
-        except Exception as e:
-            # Catch other potential errors during processing (like Tesseract issues)
-            print(f"An unexpected error occurred while processing {file_path}: {e}")
-
-    print(f"\n--- Ingestion Complete. Total chunks for RAG: {len(all_rag_documents)} ---")
-    
-    # You can now feed 'all_rag_documents' into your vector database ingestion script
